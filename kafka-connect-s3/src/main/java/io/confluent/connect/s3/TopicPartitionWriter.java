@@ -462,10 +462,9 @@ public class TopicPartitionWriter {
   }
 
   private String fileKey(String topicsPrefix, String name) {
-    String suffix =  dirDelim + name;
     return StringUtils.isNotBlank(topicsPrefix)
-           ? topicsPrefix + dirDelim + suffix
-           : suffix;
+           ? topicsPrefix + dirDelim + name
+           : name;
   }
 
   private String fileKeyToCommit(long startOffset) {
