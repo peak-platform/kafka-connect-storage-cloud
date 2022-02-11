@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: kafka-connect-storage-cloud
+  description: Kafka connector for loading data to S3.
+  annotations:
+    github.com/project-slug: 'peak-platform/kafka-connect-storage-cloud'
+    backstage.io/techdocs-ref: url:https://github.com/peak-platform/kafka-connect-storage-cloud
+  tags:
+    - java
+    - fork
+spec:
+  type: service
+  lifecycle: production
+  owner: squad-dock-logan
+  providesApis:
+    - kafka-connect-storage-cloud
