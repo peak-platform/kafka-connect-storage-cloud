@@ -53,6 +53,7 @@ public class S3OutputStream extends PositionOutputStream {
   private final AmazonS3 s3;
   private final S3SinkConnectorConfig connectorConfig;
   private final String bucket;
+  private final String storageClass;
   private final String key;
   private final String ssea;
   private final SSECustomerKey sseCustomerKey;
@@ -72,6 +73,7 @@ public class S3OutputStream extends PositionOutputStream {
     this.s3 = s3;
     this.connectorConfig = conf;
     this.bucket = conf.getBucketName();
+    this.storageClass = conf.getStorageClass();
     this.key = key;
     this.ssea = conf.getSsea();
     final String sseCustomerKeyConfig = conf.getSseCustomerKey();
@@ -204,7 +206,8 @@ public class S3OutputStream extends PositionOutputStream {
         bucket,
         key,
         newObjectMetadata()
-    ).withCannedACL(cannedAcl);
+    ).withCannedACL(cannedAcl)
+    .withStorageClass(storageClass);
 
     if (SSEAlgorithm.KMS.toString().equalsIgnoreCase(ssea)
         && StringUtils.isNotBlank(sseKmsKeyId)) {
