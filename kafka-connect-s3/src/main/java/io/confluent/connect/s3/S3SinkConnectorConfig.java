@@ -76,6 +76,7 @@ public class S3SinkConnectorConfig extends StorageSinkConnectorConfig {
 
   // S3 Group
   public static final String S3_STORAGE_CLASS = "s3.storage.class";
+  public static final String S3_STORAGE_CLASS_DEFAULT = "STANDARD";
 
   public static final String S3_BUCKET_CONFIG = "s3.bucket.name";
 
@@ -267,6 +268,7 @@ public class S3SinkConnectorConfig extends StorageSinkConnectorConfig {
       configDef.define(
           S3_STORAGE_CLASS,
           Type.STRING,
+          S3_STORAGE_CLASS_DEFAULT,
           Importance.LOW,
           "The storage class to use for new objects.",
           group,
