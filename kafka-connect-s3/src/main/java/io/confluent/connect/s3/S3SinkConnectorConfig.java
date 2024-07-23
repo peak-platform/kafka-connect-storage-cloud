@@ -75,6 +75,9 @@ import static org.apache.kafka.common.config.ConfigDef.Range.atLeast;
 public class S3SinkConnectorConfig extends StorageSinkConnectorConfig {
 
   // S3 Group
+  public static final String S3_STORAGE_CLASS = "s3.storage.class";
+  public static final String S3_STORAGE_CLASS_DEFAULT = "STANDARD";
+
   public static final String S3_BUCKET_CONFIG = "s3.bucket.name";
 
   public static final String S3_OBJECT_TAGGING_CONFIG = "s3.object.tagging";
@@ -260,6 +263,18 @@ public class S3SinkConnectorConfig extends StorageSinkConnectorConfig {
           ++orderInGroup,
           Width.LONG,
           "S3 Bucket"
+      );
+
+      configDef.define(
+          S3_STORAGE_CLASS,
+          Type.STRING,
+          S3_STORAGE_CLASS_DEFAULT,
+          Importance.LOW,
+          "The storage class to use for new objects.",
+          group,
+          ++orderInGroup,
+          Width.LONG,
+          "S3 Storage Class"
       );
 
       configDef.define(
@@ -712,6 +727,10 @@ public class S3SinkConnectorConfig extends StorageSinkConnectorConfig {
 
   public String getBucketName() {
     return getString(S3_BUCKET_CONFIG);
+  }
+
+  public String getStorageClass() {
+    return getString(S3_STORAGE_CLASS);
   }
 
   public String getSsea() {
