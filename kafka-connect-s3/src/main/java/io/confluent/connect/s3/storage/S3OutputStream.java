@@ -54,6 +54,7 @@ public class S3OutputStream extends PositionOutputStream {
   private static final Logger log = LoggerFactory.getLogger(S3OutputStream.class);
   private final AmazonS3 s3;
   private final String bucket;
+  private final String storageClass;
   private final String key;
   private final String ssea;
   private final SSECustomerKey sseCustomerKey;
@@ -73,6 +74,7 @@ public class S3OutputStream extends PositionOutputStream {
   public S3OutputStream(String key, S3SinkConnectorConfig conf, AmazonS3 s3) {
     this.s3 = s3;
     this.bucket = conf.getBucketName();
+    this.storageClass = conf.getStorageClass();
     this.key = key;
     this.ssea = conf.getSsea();
     final String sseCustomerKeyConfig = conf.getSseCustomerKey();
@@ -218,7 +220,8 @@ public class S3OutputStream extends PositionOutputStream {
     InitiateMultipartUploadRequest initRequest = new InitiateMultipartUploadRequest(
         bucket,
         key
-    ).withCannedACL(cannedAcl);
+    ).withCannedACL(cannedAcl)
+        .withStorageClass(storageClass);
 
     if (SSEAlgorithm.AES256.toString().equalsIgnoreCase(ssea)
         && sseCustomerKey == null) {
