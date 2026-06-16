@@ -307,10 +307,15 @@ public class TopicPartitionWriterTest extends TestWithMockedS3 {
     List<Struct> expectedRecords = new ArrayList<>();
     int ibase = 16;
     float fbase = 12.2f;
-    // The expected sequence of records is constructed taking into account that sorting of files occurs in verify
-    for (int i = 0; i < 3; ++i) {
-      for (int j = 0; j < 6; ++j) {
-        expectedRecords.add(createRecord(schema, ibase + i, fbase + i));
+    // The expected sequence of records is constructed taking into account that sorting of files occurs in verify.
+    // The peak path-flattening drops the partition-dir prefix, so committed files sort by offset rather than by
+    // partition field: files commit at offsets {0,1,2} then {9,10,11}, and within each block the field value
+    // cycles 16,17,18 (3 records each). Build the expected records in that flattened sort order.
+    for (int block = 0; block < 2; ++block) {
+      for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3; ++j) {
+          expectedRecords.add(createRecord(schema, ibase + i, fbase + i));
+        }
       }
     }
 
@@ -1483,7 +1488,7 @@ public class TopicPartitionWriterTest extends TestWithMockedS3 {
   public void testFailS3ObjectTaggingSdkClientException() throws Exception {
     ConnectException exception = assertThrows(ConnectException.class,
             () -> testS3ObjectTaggingErrorHelper(true, false));
-    assertEquals("Unable to tag S3 object topics_test-topic_partition=12_test-topic#12#0000000000.avro", exception.getMessage());
+    assertEquals("Unable to tag S3 object topics_test-topic#12#0000000000.avro", exception.getMessage());
     assertEquals("Mock SdkClientException while tagging", exception.getCause().getMessage());
   }
 
@@ -1491,7 +1496,7 @@ public class TopicPartitionWriterTest extends TestWithMockedS3 {
   public void testFailS3ObjectTaggingRuntimeException() throws Exception {
     ConnectException exception = assertThrows(ConnectException.class, () ->
             testS3ObjectTaggingErrorHelper(false, false));
-    assertEquals("Unable to tag S3 object topics_test-topic_partition=12_test-topic#12#0000000000.avro", exception.getMessage());
+    assertEquals("Unable to tag S3 object topics_test-topic#12#0000000000.avro", exception.getMessage());
     assertEquals("Mock RuntimeException while tagging", exception.getCause().getMessage());
   }
 

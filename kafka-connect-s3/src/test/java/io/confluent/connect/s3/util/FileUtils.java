@@ -23,11 +23,13 @@ public class FileUtils {
   public static final String TEST_FILE_DELIM = "#";
   public static final String TEST_DIRECTORY_DELIM = "_";
 
+  // Mirrors the peak fork's TopicPartitionWriter customization: committed object
+  // keys are flattened — the partition-directory prefix (keyPrefix) is intentionally
+  // dropped. The parameter is retained for call-site compatibility but unused.
   public static String fileKey(String topicsPrefix, String keyPrefix, String name) {
-    String suffix = keyPrefix + TEST_DIRECTORY_DELIM + name;
     return StringUtils.isNotBlank(topicsPrefix)
-           ? topicsPrefix + TEST_DIRECTORY_DELIM + suffix
-           : suffix;
+           ? topicsPrefix + TEST_DIRECTORY_DELIM + name
+           : name;
   }
 
   public static String fileKeyToCommit(String topicsPrefix, String dirPrefix, TopicPartition tp, long startOffset,
